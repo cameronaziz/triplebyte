@@ -16,14 +16,12 @@ app.use(bodyParser.raw());
 
 // Routes
 app.get('/get-data', async (req, res) => {
-  const data = await firebase.fetch('data/')
-  console.log(data)
+  const data = await firebase.fetch('data/');
   res.send(data);
 });
 
 app.post('/set-data', async (req, res) => {
-  const { body } = req
-  const response = firebase.send('data/', body);
+  const response = firebase.send('data/',  req.body);
   res.send(response);
 });
 

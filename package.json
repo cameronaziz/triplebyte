@@ -3,8 +3,8 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "dev": "concurrently \"yarn start:backend:watch\" \"yarn start:frontend\"",
     "start": "concurrently \"yarn start:backend\" \"yarn start:frontend\"",
-    "start:watch": "concurrently \"yarn start:backend:watch\" \"yarn start:frontend\"",
     "start:backend": "yarn workspace @triplebyte/backend start",
     "start:backend:watch": "yarn workspace @triplebyte/backend start:watch",
     "start:frontend": "yarn workspace @triplebyte/frontend start"
