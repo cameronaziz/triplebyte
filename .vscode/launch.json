@@ -5,8 +5,7 @@
       "type": "pwa-chrome",
       "request": "launch",
       "name": "Launch Program",
-      "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}"
+      "url": "http://localhost:3000"
     }
   ]
 }
