@@ -1,5 +1,6 @@
 body {
   background-color: rgba(169, 90, 193, 0.3);
+  font-family: 'Poppins', sans-serif;
 }
 
 .container {
@@ -9,13 +10,22 @@ body {
   padding: 0 1rem;
   align-items: center;
   justify-content: center;
-  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
 }
 
 .cat {
   max-width: 70vw;
   border-radius: 1rem;
-  border: 1px solid #fff;
+  box-sizing: content-box;
+  border: 12px solid rgba(206, 206, 196, 0.8);
+  box-shadow: 4px 8px 12px 0px rgba(121, 121, 101, 0.5);
+  transition: all 0.2s ease-in-out;
+}
+
+.cat:hover {
+  transform: scale(1.007);
+  transition: all 0.4s ease-in-out;
+  box-shadow: 5px 10px 16px 0px rgba(121, 121, 101, 0.5);
 }
 
 .code {
@@ -25,5 +35,5 @@ body {
   background-color: #acacac;
   border-radius: 0.2rem;
   border: 1px solid rgb(84, 84, 84);
-  margin: 1rem 0;
+  margin: 2rem 0;
 }
