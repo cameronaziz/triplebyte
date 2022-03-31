@@ -1,6 +1,5 @@
 import { useEffect, useState, VFC } from 'react';
-
-
+import './app.css';
 
 const App: VFC = () => {
   const [data, setData] = useState(null)
@@ -19,9 +18,10 @@ const App: VFC = () => {
   }
 
   return (
-    <div>
-      Hello World
-      <div>{JSON.stringify(data, null, 2)}</div>
+    <div className="container">
+      <h1>Well, hello.</h1>
+      <img className="cat" alt="cat" src="images/cat.png" />
+      <code className="code">{JSON.stringify(data, null, 2)}</code>
     </div>
   );
 };
