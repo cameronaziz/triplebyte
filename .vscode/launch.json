@@ -4,7 +4,7 @@
     {
       "type": "pwa-chrome",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Launch Debug",
       "url": "http://localhost:3000"
     }
   ]

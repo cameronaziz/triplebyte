@@ -1,5 +1,8 @@
 # Triplebyte Interview
-A basic setup with a frontend, backend, and a cat.
+A basic setup with a frontend, a backend, and a cat.
+* Concurrenlty configured - run `yarn dev`.
+* VSCode debug setup - run Launch Debug.
+* Github Codespaces supported
 ### Frontend
 Create React App with the Typescript template. Firebase connection to the backend service.
 ### Backend
