@@ -1,0 +1,25 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es6",
+		"outDir": "out",
+    "lib": [
+      "DOM",
+			"ESNext"
+    ],
+		"sourceMap": true,
+		"rootDir": "src",
+		"strict": true,
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"isolatedModules": true,
+		"allowJs": true
+	},
+	"exclude": [
+		"node_modules",
+		".vscode-test",
+		"out"
+	]
+}
+

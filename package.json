@@ -6,9 +6,11 @@
     "dev": "concurrently \"yarn dev:backend\" \"yarn dev:frontend\"",
     "dev:backend": "yarn workspace @triplebyte/backend start:watch",
     "dev:frontend": "yarn start:frontend",
+    "dev:cli": "yarn workspace @triplebyte/cli build:watch",
     "start": "concurrently \"yarn start:backend\" \"yarn start:frontend\"",
     "start:backend": "yarn workspace @triplebyte/backend start",
-    "start:frontend": "yarn workspace @triplebyte/frontend start"
+    "start:frontend": "yarn workspace @triplebyte/frontend start",
+    "start:cli": "node packages/cli/dist/index.js"
   },
   "workspaces": [
     "packages/*"

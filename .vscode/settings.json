@@ -2,7 +2,6 @@
   "files.exclude": {
     "**/node_modules": true,
     "yarn.lock": true,
-    "**/dist": true,
     ".vscode": true,
     ".gitignore": true,
     ".nvmrc": true,
@@ -14,11 +13,12 @@
     "packages/frontend/src/setupTests.ts": true,
     "packages/frontend/src/react-app-env.d.ts": true,
     "packages/frontend/public": true,
-
     // "packages/cli": true,
-    // "packages/frontend": true,
+    "**/dist": true,
+    "packages/frontend": true,
+    "packages/extension": true,
     "packages/frontend/src/app.css": true,
-    // "packages/backend": true,
+    "packages/backend": true,
     "packages/backend/src/firebase": true,
   },
   "search.exclude": {
@@ -38,5 +38,8 @@
     "packages/backend/src/app.css": false,
     "packages/backend": false,
     "packages/backend/src/firebase": false,
-  }
+  },
+  "cSpell.words": [
+    "Tetris"
+  ]
 }
