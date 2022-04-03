@@ -78,9 +78,9 @@ exports.WELCOME_MESSAGE = [
         text: '',
     },
     {
-        text: 'Start: <Enter>',
+        text: '<Enter> to Start',
     },
     {
-        text: 'Configure: <Tab>',
+        text: '<Tab> to Configure',
     },
 ];

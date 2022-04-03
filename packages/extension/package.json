@@ -22,9 +22,9 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "interview.playTetris",
+				"command": "triplebyte.launch",
 				"title": "Start Tetris",
-				"category": "Interview"
+				"category": "Triplebyte"
 			}
 		]
 	},

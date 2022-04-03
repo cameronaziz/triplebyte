@@ -56,9 +56,10 @@ const parse = async (uri: Uri[], terminal: Terminal): Promise<string[]> => {
     .reduce((acc, curr) => acc.concat(curr), [])
   console.log(result)
   return result;
-}
+};
 
-const run = async () => {
+const launch = async () => {
+
   const uris = getWorkspaceUris();
   if (uris.length < 1) {
     window.showErrorMessage('No workspace found');
@@ -68,7 +69,7 @@ const run = async () => {
   const terminal = window.createTerminal({
     name: 'Tetris',
     shellPath: 'bash',
-    location: 1,
+    location: 2,
   });
 
   const pj = await packageJson(uris, );
@@ -76,11 +77,23 @@ const run = async () => {
   terminal.show();
   commands.executeCommand('workbench.action.toggleMaximizedPanel');
   terminal.sendText("tb")
+};
+
+const start = async () => {
+  await window.showInformationMessage('Starting Game', { modal: true });
+  launch();
 }
 
 
 export const activate = (context: ExtensionContext) => {
-  run()
+  const hasStarted = context.workspaceState.get<boolean>('hasStarted');
+  if (hasStarted) {
+    start();
+  }
+  commands.registerCommand('triplebyte.launch', async () => {
+    start();
+    context.workspaceState.update('hasStarted', true);
+  });
 };
 
 export const deactivate = () => {
