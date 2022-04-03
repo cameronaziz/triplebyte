@@ -88,10 +88,6 @@ const start = async () => {
 }
 
 export const activate = async (context: ExtensionContext) => {
-  const hasStarted = context.workspaceState.get<boolean>('hasStarted');
-  if (hasStarted) {
-    await start();
-  }
 
   commands.registerCommand('triplebyte.kill', () => {
     context.workspaceState.update('hasStarted', false);
@@ -102,6 +98,8 @@ export const activate = async (context: ExtensionContext) => {
   });
 
   commands.registerCommand('triplebyte.launch', start);
+
+  await start();
 };
 
 export const deactivate = () => {
