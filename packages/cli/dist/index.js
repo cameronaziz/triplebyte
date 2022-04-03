@@ -15,7 +15,7 @@ var cli = function () { return new Promise(function (resolve) {
     process.stdout.write('\x1B[?25l');
     // Setup Machine
     var machine = new machine_1.default();
-    // Listen to keypresses
+    // Listen to keypress
     process.stdin.on('keypress', function (str, key) {
         // Handle exit
         if (key.ctrl && key.name === 'c') {
@@ -27,12 +27,7 @@ var cli = function () { return new Promise(function (resolve) {
         }
         // Handle all others
         switch (key.name) {
-            // 0, 1, 2 and 3 are for setting the speed
-            case '0':
-                if (!machine.isPlaying) {
-                    machine.settings.speed = constants_1.Speed.Off;
-                }
-                break;
+            // 1, 2 and 3 are for setting the speed
             case '1':
                 if (!machine.isPlaying) {
                     machine.settings.speed = constants_1.Speed.Slow;
@@ -71,19 +66,19 @@ var cli = function () { return new Promise(function (resolve) {
                 }
                 break;
             // Rotate piece clockwise
-            case 's':
+            case 'down':
                 if (machine.board.movingPiece) {
                     piece_1.default.rotate(machine.board.movingPiece, 'clockwise');
                 }
                 break;
             // Rotate piece counterclockwise
-            case 'a':
+            case 'up':
                 if (machine.board.movingPiece) {
                     piece_1.default.rotate(machine.board.movingPiece, 'counterclockwise');
                 }
                 break;
             // Speed up moving piece down
-            case 'down':
+            case 'space':
                 if (machine.board.movingPiece) {
                     machine.move();
                 }
@@ -95,12 +90,19 @@ var cli = function () { return new Promise(function (resolve) {
                     machine.move();
                     break;
                 }
-                machine.isPlaying = true;
-                // machine.play();
+                machine.play();
                 break;
             }
             case 'tab': {
-                machine.settings.tabLocation += 1;
+                if (!machine.isPlaying) {
+                    machine.settings.tabLocation += 1;
+                }
+                break;
+            }
+            case 'escape': {
+                if (!machine.isPlaying) {
+                    machine.settings.tabLocation = -1;
+                }
                 break;
             }
             // Set dev mode

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var constants_1 = require("../constants");
 var Settings = /** @class */ (function () {
     function Settings() {
-        this.speedTarget = constants_1.Speed.Off;
+        this.speedTarget = constants_1.Speed.Medium;
         this.tabLocationTarget = -1;
         this.devModeTarget = constants_1.DEV_MODE;
         this.listeners = [];

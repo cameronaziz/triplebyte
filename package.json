@@ -7,6 +7,8 @@
     "dev:backend": "yarn workspace @triplebyte/backend start:watch",
     "dev:frontend": "yarn start:frontend",
     "dev:cli": "yarn workspace @triplebyte/cli build:watch",
+    "dev:extension": "yarn workspace tetris-extension esbuild:watch",
+    "package:extension": "yarn workspace tetris-extension package",
     "start": "concurrently \"yarn start:backend\" \"yarn start:frontend\"",
     "start:backend": "yarn workspace @triplebyte/backend start",
     "start:frontend": "yarn workspace @triplebyte/frontend start",

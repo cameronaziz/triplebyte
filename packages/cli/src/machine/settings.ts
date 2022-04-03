@@ -1,7 +1,7 @@
 import { DEV_MODE, Speed } from '../constants';
 
 class Settings {
-  private speedTarget: Speed = Speed.Off;
+  private speedTarget: Speed = Speed.Medium;
   private tabLocationTarget = -1;
   private devModeTarget = DEV_MODE;
   private listeners: Types.SettingsListener[] = [];

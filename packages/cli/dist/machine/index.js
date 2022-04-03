@@ -41,7 +41,9 @@ var Machine = /** @class */ (function () {
         // Starts iteration to move
         this.play = function () {
             var settings = _this.state.settings;
-            if (settings.speed !== constants_1.Speed.Off && !settings.devMode) {
+            settings.tabLocation = -1;
+            _this.isPlaying = true;
+            if (!settings.devMode) {
                 _this.interval = setInterval(function () {
                     _this.move();
                     _this.print();

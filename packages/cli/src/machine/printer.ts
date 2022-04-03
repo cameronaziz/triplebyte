@@ -1,4 +1,4 @@
-import { BOARD_DIMENSIONS, COLORS, WELCOME_MESSAGE } from '../constants';
+import { BOARD_DIMENSIONS, CODES, COLORS, WELCOME_MESSAGE } from '../constants';
 import type Settings from './settings';
 const reset = '\x1b[0m';
 
@@ -62,15 +62,19 @@ class Printer {
 
   private printScreen = (messages: Types.Message[]) => {
     this.startPrint()
-    const { width } = this.board.dimensions
+    const { width, height } = this.board.dimensions
+    const additionalRows = Math.max(0, height - messages.length - 2);
+    const before = Math.floor(additionalRows / 2);
+    this.emptyRows(before);
     const offset = Math.ceil((width - messages.length) / 2);
     for (let i = 0; i < width; i++) {
       const row = this.board.cells[i];
       process.stdout.write(' █');
       if (i >= offset && messages) {
         const message = messages.shift() || { text: ''};
+        const messageText = `${message.label ? message.label : ''}${message.text}`;
         const rowSize = row.length * BOARD_DIMENSIONS.printDimensions.width
-        const space = (rowSize - message.text.length) / BOARD_DIMENSIONS.printDimensions.width;
+        const space = (rowSize - messageText.length) / BOARD_DIMENSIONS.printDimensions.width;
         const leading = Math.floor(space / 2);
         this.repeat(' ', leading);
         const text = this.formatText(message)
@@ -81,19 +85,28 @@ class Printer {
       }
       process.stdout.write('█ \n');
     }
+    this.emptyRows(additionalRows - before);
     this.endPrint()
   }
 
-  private resetBoard = () => {
-    if (this.settings.devMode) {
-      process.stdout.write('\n');
+  private resetBoard = (force?: boolean) => {
+    if (!this.settings.devMode) {
+      process.stdout.cursorTo(0, 0);
+      process.stdout.write('\x1Bc');
+      process.stdout.clearScreenDown();
+      process.stdout.cursorTo(0, 0);
       return;
     }
-    process.stdout.cursorTo(0, 0);
-    process.stdout.write('\x1Bc');
-    process.stdout.clearScreenDown();
-    process.stdout.cursorTo(0, 0);
+    process.stdout.write('\n');
   };
+
+  private emptyRows = (amount: number = 1, width: number = BOARD_DIMENSIONS.width) => {
+    Array.from({ length: amount }).forEach(() => {
+      process.stdout.write(' █');
+      this.repeat(' ', width);
+      process.stdout.write('█ \n');
+    });
+  }
 
   private repeat = (text: string, size: number = 1) => {
     const length = BOARD_DIMENSIONS.printDimensions.width * size;
@@ -113,32 +126,30 @@ class Printer {
 
 
   private formatText = (message: Types.Message) => {
-    switch (this.settings.tabLocation) {
-      case 0: return this.formatSpeed(message.text);
+    switch (message.tab) {
+      case 0:
+        return `${message.label}${CODES.dim}${this.formatSpeed(message.text)}${CODES.reset}`;
       default: return message.text;
     }
   }
 
   private formatSpeed = (message: string) => {
-    const { speed } = this.settings;
-    if (message.includes('Speed')) {
-      switch (speed) {
-        case 'off':
-          return colorize(message, '⓪', COLORS.green);
-        case 'slow':
-          return colorize(message, '①', COLORS.green);
-        case 'medium':
-          return colorize(message, '②', COLORS.green);
-        case 'fast':
-          return colorize(message, '③', COLORS.green);
-      }
+    const { speed, tabLocation } = this.settings;
+    const color = tabLocation === 0 ? COLORS.green : COLORS.white;
+    switch (speed) {
+      case 'slow':
+        return colorize(message, '①', color);
+      case 'medium':
+        return colorize(message, '②', color);
+      case 'fast':
+        return colorize(message, '③', color);
     }
     return message;
   }
 }
 
 const colorize = (message: string, search: string, color: string): string =>
-  message.replace(search, `${color}${search}${reset}`);
+  message.replace(search, `${reset}${color}${search}${reset}${CODES.dim}`);
 
 
 export default Printer;

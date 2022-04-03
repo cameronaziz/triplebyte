@@ -60,15 +60,19 @@ var Printer = /** @class */ (function () {
         };
         this.printScreen = function (messages) {
             _this.startPrint();
-            var width = _this.board.dimensions.width;
+            var _a = _this.board.dimensions, width = _a.width, height = _a.height;
+            var additionalRows = Math.max(0, height - messages.length - 2);
+            var before = Math.floor(additionalRows / 2);
+            _this.emptyRows(before);
             var offset = Math.ceil((width - messages.length) / 2);
             for (var i = 0; i < width; i++) {
                 var row = _this.board.cells[i];
                 process.stdout.write(' █');
                 if (i >= offset && messages) {
                     var message = messages.shift() || { text: '' };
+                    var messageText = "".concat(message.label ? message.label : '').concat(message.text);
                     var rowSize = row.length * constants_1.BOARD_DIMENSIONS.printDimensions.width;
-                    var space = (rowSize - message.text.length) / constants_1.BOARD_DIMENSIONS.printDimensions.width;
+                    var space = (rowSize - messageText.length) / constants_1.BOARD_DIMENSIONS.printDimensions.width;
                     var leading = Math.floor(space / 2);
                     _this.repeat(' ', leading);
                     var text = _this.formatText(message);
@@ -80,17 +84,27 @@ var Printer = /** @class */ (function () {
                 }
                 process.stdout.write('█ \n');
             }
+            _this.emptyRows(additionalRows - before);
             _this.endPrint();
         };
-        this.resetBoard = function () {
-            if (_this.settings.devMode) {
-                process.stdout.write('\n');
+        this.resetBoard = function (force) {
+            if (!_this.settings.devMode) {
+                process.stdout.cursorTo(0, 0);
+                process.stdout.write('\x1Bc');
+                process.stdout.clearScreenDown();
+                process.stdout.cursorTo(0, 0);
                 return;
             }
-            process.stdout.cursorTo(0, 0);
-            process.stdout.write('\x1Bc');
-            process.stdout.clearScreenDown();
-            process.stdout.cursorTo(0, 0);
+            process.stdout.write('\n');
+        };
+        this.emptyRows = function (amount, width) {
+            if (amount === void 0) { amount = 1; }
+            if (width === void 0) { width = constants_1.BOARD_DIMENSIONS.width; }
+            Array.from({ length: amount }).forEach(function () {
+                process.stdout.write(' █');
+                _this.repeat(' ', width);
+                process.stdout.write('█ \n');
+            });
         };
         this.repeat = function (text, size) {
             if (size === void 0) { size = 1; }
@@ -103,24 +117,22 @@ var Printer = /** @class */ (function () {
             process.stdout.write("".concat(movingPiece.color, "\u2588\u2588").concat(reset));
         };
         this.formatText = function (message) {
-            switch (_this.settings.tabLocation) {
-                case 0: return _this.formatSpeed(message.text);
+            switch (message.tab) {
+                case 0:
+                    return "".concat(message.label).concat(constants_1.CODES.dim).concat(_this.formatSpeed(message.text)).concat(constants_1.CODES.reset);
                 default: return message.text;
             }
         };
         this.formatSpeed = function (message) {
-            var speed = _this.settings.speed;
-            if (message.includes('Speed')) {
-                switch (speed) {
-                    case 'off':
-                        return colorize(message, '⓪', constants_1.COLORS.green);
-                    case 'slow':
-                        return colorize(message, '①', constants_1.COLORS.green);
-                    case 'medium':
-                        return colorize(message, '②', constants_1.COLORS.green);
-                    case 'fast':
-                        return colorize(message, '③', constants_1.COLORS.green);
-                }
+            var _a = _this.settings, speed = _a.speed, tabLocation = _a.tabLocation;
+            var color = tabLocation === 0 ? constants_1.COLORS.green : constants_1.COLORS.white;
+            switch (speed) {
+                case 'slow':
+                    return colorize(message, '①', color);
+                case 'medium':
+                    return colorize(message, '②', color);
+                case 'fast':
+                    return colorize(message, '③', color);
             }
             return message;
         };
@@ -134,6 +146,6 @@ var Printer = /** @class */ (function () {
     return Printer;
 }());
 var colorize = function (message, search, color) {
-    return message.replace(search, "".concat(color).concat(search).concat(reset));
+    return message.replace(search, "".concat(reset).concat(color).concat(search).concat(reset).concat(constants_1.CODES.dim));
 };
 exports.default = Printer;

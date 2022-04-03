@@ -14,11 +14,11 @@ const cli = () => new Promise((resolve) => {
   const machine = new Machine();
 
 
-  // Listen to keypresses
+  // Listen to keypress
   process.stdin.on('keypress', (str, key) => {
     // Handle exit
     if (key.ctrl && key.name === 'c') {
-
+      process.stdout.write('\x1B[?25h\n');
       process.exit();
     }
 
@@ -27,15 +27,9 @@ const cli = () => new Promise((resolve) => {
       machine.resetBoard();
     }
 
-
     // Handle all others
     switch (key.name) {
-      // 0, 1, 2 and 3 are for setting the speed
-      case '0':
-        if (!machine.isPlaying) {
-          machine.settings.speed = Speed.Off
-        }
-        break;
+      // 1, 2 and 3 are for setting the speed
       case '1':
         if (!machine.isPlaying) {
           machine.settings.speed = Speed.Slow
@@ -74,19 +68,19 @@ const cli = () => new Promise((resolve) => {
         }
         break;
       // Rotate piece clockwise
-      case 's':
+      case 'down':
         if (machine.board.movingPiece) {
           piece.rotate(machine.board.movingPiece, 'clockwise');
         }
         break;
       // Rotate piece counterclockwise
-      case 'a':
+      case 'up':
         if (machine.board.movingPiece) {
           piece.rotate(machine.board.movingPiece, 'counterclockwise');
         }
         break;
       // Speed up moving piece down
-      case 'down':
+      case 'space':
         if (machine.board.movingPiece) {
           machine.move();
         }
@@ -98,13 +92,20 @@ const cli = () => new Promise((resolve) => {
           machine.move();
           break;
         }
-        machine.isPlaying = true
-        // machine.play();
+        machine.play();
         break;
       }
       case 'tab': {
-        machine.settings.tabLocation += 1;
+        if (!machine.isPlaying) {
+          machine.settings.tabLocation += 1;
+        }
         break
+      }
+      case 'escape': {
+        if (!machine.isPlaying) {
+          machine.settings.tabLocation = -1;
+        }
+        break;
       }
       // Set dev mode
       case 'd':

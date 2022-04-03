@@ -14,7 +14,7 @@ export type Piece = {
   coordinates: Coordinate[];
 }
 
-export type Color = 'red' | 'blue' | 'green' | 'yellow' | 'magenta' | 'cyan';
+export type Color = 'red' | 'blue' | 'green' | 'yellow' | 'magenta' | 'cyan' | 'white'
 export type Colors = {
   [color in Color]: string;
 }
@@ -65,6 +65,7 @@ export type SettingsProperties = {
 }
 
 export type Message = {
+  label?: string
   text: string;
   tab?: number;
 }

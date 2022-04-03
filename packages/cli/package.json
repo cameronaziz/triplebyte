@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "go": "node require('dist/index.js')",
     "build:watch": "tsc -w"
   },
   "dependencies": {

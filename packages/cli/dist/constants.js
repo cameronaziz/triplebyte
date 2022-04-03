@@ -1,32 +1,27 @@
 "use strict";
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WELCOME_MESSAGE = exports.COLORS = exports.SPEEDS = exports.Speed = exports.BOARD_DIMENSIONS = exports.DEV_MODE = void 0;
+exports.WELCOME_MESSAGE = exports.CODES = exports.COLORS = exports.SPEEDS = exports.Speed = exports.BOARD_DIMENSIONS = exports.DEV_MODE = void 0;
 exports.DEV_MODE = false;
 exports.BOARD_DIMENSIONS = {
     width: 10,
     height: 15,
     printDimensions: {
         width: 2,
-        height: 1,
+        height: 2,
     }
 };
 var Speed;
 (function (Speed) {
-    Speed["Off"] = "off";
+    // Off = 'off',
     Speed["Slow"] = "slow";
     Speed["Medium"] = "medium";
     Speed["Fast"] = "fast";
 })(Speed = exports.Speed || (exports.Speed = {}));
 exports.SPEEDS = (_a = {},
-    _a[Speed.Off] = {
-        interval: 0,
-        lower: Speed.Off,
-        higher: Speed.Slow,
-    },
     _a[Speed.Slow] = {
         interval: 2000,
-        lower: Speed.Off,
+        lower: Speed.Slow,
         higher: Speed.Medium,
     },
     _a[Speed.Medium] = {
@@ -47,6 +42,11 @@ exports.COLORS = {
     magenta: '\x1b[35m',
     red: '\x1b[31m',
     yellow: '\x1b[33m',
+    white: "\x1b[37m",
+};
+exports.CODES = {
+    reset: '\x1b[0m',
+    dim: '\x1b[2m',
 };
 exports.WELCOME_MESSAGE = [
     {
@@ -62,7 +62,9 @@ exports.WELCOME_MESSAGE = [
         text: '',
     },
     {
-        text: 'Speed: ⓪  ①  ②  ③',
+        label: 'Speed ',
+        text: '①  ②  ③',
+        tab: 0,
     },
     {
         text: '',

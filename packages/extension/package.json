@@ -1,9 +1,10 @@
 {
-	"name": "tetris",
+	"name": "tetris-extension",
 	"displayName": "The Extension",
 	"description": "Make things work",
 	"version": "1.0.0",
 	"publisher": "Cameron-Aziz",
+	"license": "UNLICENSED",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/ticketfanatic/triplebyte"

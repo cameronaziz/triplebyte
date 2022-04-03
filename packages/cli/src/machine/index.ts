@@ -1,4 +1,4 @@
-import { BOARD_DIMENSIONS, Speed, SPEEDS } from '../constants';
+import { BOARD_DIMENSIONS, SPEEDS } from '../constants';
 import piece from '../piece';
 import Printer from './printer';
 import Settings from './settings';
@@ -84,7 +84,9 @@ class Machine {
   // Starts iteration to move
   play = () => {
     const { settings } = this.state
-    if (settings.speed !== Speed.Off && !settings.devMode) {
+    settings.tabLocation = -1;
+    this.isPlaying = true;
+    if (!settings.devMode) {
       this.interval = setInterval(() => {
         this.move()
         this.print();

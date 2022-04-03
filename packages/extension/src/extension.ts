@@ -1,7 +1,7 @@
 import path from 'path';
 import { commands, ExtensionContext, FileType, Terminal, Uri, window, workspace } from 'vscode';
 
-const getWorkspaceUri = (filePath?: string): Uri[] => {
+const getWorkspaceUris = (): Uri[] => {
   const folders = workspace.workspaceFolders
 
   if (!folders) {
@@ -47,7 +47,6 @@ const parse = async (uri: Uri[], terminal: Terminal): Promise<string[]> => {
       const parsed = JSON.parse(file.toString());
       if (parsed.bin) {
         terminal.sendText(`cd ${uri.fsPath.split('/').slice(0, -1).join('/')}`);
-        terminal.sendText('npm link');
         return Object.keys(parsed.bin)
       }
     })
@@ -60,14 +59,17 @@ const parse = async (uri: Uri[], terminal: Terminal): Promise<string[]> => {
 }
 
 const run = async () => {
-  window.showInformationMessage('Hello World!', { modal: true });
-  const uris = getWorkspaceUri();
+  const uris = getWorkspaceUris();
   if (uris.length < 1) {
     window.showErrorMessage('No workspace found');
     return;
   }
 
-  const terminal = window.createTerminal("Tetris", process.env.COMSPEC);
+  const terminal = window.createTerminal({
+    name: 'Tetris',
+    shellPath: 'bash',
+    location: 1,
+  });
 
   const pj = await packageJson(uris, );
   await parse(pj, terminal)

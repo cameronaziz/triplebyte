@@ -5,26 +5,21 @@ export const BOARD_DIMENSIONS = {
   height: 15,
   printDimensions: {
     width: 2,
-    height: 1,
+    height: 2,
   }
 };
 
 export enum Speed {
-  Off = 'off',
+  // Off = 'off',
   Slow = 'slow',
   Medium = 'medium',
   Fast = 'fast',
 }
 
 export const SPEEDS: Types.Speeds = {
-  [Speed.Off]: {
-    interval: 0,
-    lower: Speed.Off,
-    higher: Speed.Slow,
-  },
   [Speed.Slow]: {
     interval: 2000,
-    lower: Speed.Off,
+    lower: Speed.Slow,
     higher: Speed.Medium,
   },
   [Speed.Medium]: {
@@ -46,6 +41,12 @@ export const COLORS: Types.Colors = {
   magenta: '\x1b[35m',
   red: '\x1b[31m',
   yellow: '\x1b[33m',
+  white: "\x1b[37m",
+};
+
+export const CODES = {
+  reset: '\x1b[0m',
+  dim: '\x1b[2m',
 };
 
 export const WELCOME_MESSAGE: Types.Message[] = [
@@ -66,12 +67,12 @@ export const WELCOME_MESSAGE: Types.Message[] = [
 
   },
   {
-    text: 'Speed: ⓪  ①  ②  ③',
-
+    label: 'Speed ',
+    text: '①  ②  ③',
+    tab: 0,
   },
   {
     text: '',
-
   },
   {
     text: 'Press Enter',
