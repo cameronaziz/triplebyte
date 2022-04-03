@@ -12,40 +12,58 @@ class Printer {
   }
 
   private startPrint = () => {
-    this.resetBoard()
-    process.stdout.write(' ');
-    this.repeat('█', this.board.dimensions.width + 1);
-    process.stdout.write(' \n');
+    this.resetBoard();
+    this.endPrint();
   }
 
   private endPrint = () => {
     process.stdout.write(' ');
-    this.repeat('█', this.board.dimensions.width + 1);
-    process.stdout.write(' ');
+    this.repeat('█', this.board.dimensions.width);
+    process.stdout.write('██\n');
+  }
+
+  private get height() {
+    switch(this.settings.height) {
+      case 1:
+        return 2;
+      case 2:
+        return 3;
+      case 3:
+        return 4;
+      default:
+        return 2;
+    }
+  }
+
+  private get width() {
+    return this.settings.width * 2;
   }
 
   printBoard = () => {
     this.startPrint()
     const { cells, movingPiece } = this.board;
+    const height = this.settings.height * 2;
     cells.forEach((row, rowIndex) => {
-      process.stdout.write(' █');
-      row.forEach((cell, columnIndex) => {
-        if (movingPiece && Printer.isMovingCell(movingPiece, columnIndex, rowIndex)) {
-          this.printMoving(movingPiece);
-          return;
-        }
-        switch (cell) {
-          case 'empty':
-            this.repeat(' ')
-            break
-          case 'full':
-            this.repeat(`${COLORS.green}█${reset}`)
-            break
-          default:
-            this.repeat('▓')
-        }
+      Array.from({ length: this.height }).forEach(() => {
+        process.stdout.write(' █');
+        row.forEach((cell, columnIndex) => {
+          if (movingPiece && Printer.isMovingCell(movingPiece, columnIndex, rowIndex)) {
+            this.repeat(`${movingPiece.color}█${reset}`);
+            return;
+          }
+          switch (cell) {
+            case 'empty':
+              this.repeat(' ')
+              break
+            case 'full':
+              this.repeat(`${COLORS.green}█${reset}`)
+              break
+            default:
+              this.repeat('▓')
+          }
+        });
+        process.stdout.write('█ \n');
       });
-      process.stdout.write('█ \n');
     });
     this.endPrint()
   };
@@ -62,27 +80,26 @@ class Printer {
 
   private printScreen = (messages: Types.Message[]) => {
     this.startPrint()
-    const { width, height } = this.board.dimensions
+    const { dimensions } = this.board
+    const height = dimensions.height * this.height
     const additionalRows = Math.max(0, height - messages.length - 2);
     const before = Math.floor(additionalRows / 2);
     this.emptyRows(before);
-    const offset = Math.ceil((width - messages.length) / 2);
-    for (let i = 0; i < width; i++) {
+    const offset = Math.ceil((dimensions.width - messages.length) / 2);
+    for (let i = 0; i < dimensions.width; i++) {
       const row = this.board.cells[i];
+      const rowSize = row.length * this.width;
       process.stdout.write(' █');
       if (i >= offset && messages) {
         const message = messages.shift() || { text: ''};
-        const messageText = `${message.label ? message.label : ''}${message.text}`;
-        const rowSize = row.length * BOARD_DIMENSIONS.printDimensions.width
-        const space = (rowSize - messageText.length) / BOARD_DIMENSIONS.printDimensions.width;
-        const leading = Math.floor(space / 2);
-        this.repeat(' ', leading);
+        const messageLength = `${message.label ? message.label : ''}${message.text}`.length;
+        const space = rowSize - messageLength
+        const leading = Math.ceil(space / 2);
+        process.stdout.cursorTo(leading + 2)
         const text = this.formatText(message)
         process.stdout.write(text);
-        this.repeat(' ', space - leading);
-      } else {
-        this.repeat(' ', row.length);
       }
+      process.stdout.cursorTo(rowSize + 2)
       process.stdout.write('█ \n');
     }
     this.emptyRows(additionalRows - before);
@@ -109,7 +126,7 @@ class Printer {
   }
 
   private repeat = (text: string, size: number = 1) => {
-    const length = BOARD_DIMENSIONS.printDimensions.width * size;
+    const length = this.width * size;
     Array.from({ length: length }).forEach(() => {
       process.stdout.write(text);
     });
@@ -120,28 +137,46 @@ class Printer {
     return piece.coordinates.some((coord) => coord.x + movingX === x && coord.y + movingY === y)
   }
 
-  private printMoving = (movingPiece: Types.MovingPiece) => {
-    process.stdout.write(`${movingPiece.color}██${reset}`);
-  };
-
-
   private formatText = (message: Types.Message) => {
     switch (message.tab) {
-      case 0:
-        return `${message.label}${CODES.dim}${this.formatSpeed(message.text)}${CODES.reset}`;
+      case 0: {
+        const formatted = this.formatSetting(message.text, this.convertSpeed(), 0)
+        return `${message.label}${CODES.dim}${formatted}${CODES.reset}`;
+      }
+      case 1: {
+        const formatted = this.formatSetting(message.text, this.settings.width, 1)
+        return `${message.label}${CODES.dim}${formatted}${CODES.reset}`;
+      }
+      case 2: {
+        const formatted =this.formatSetting(message.text, this.settings.height, 2)
+        return `${message.label}${CODES.dim}${formatted}${CODES.reset}`;
+      }
       default: return message.text;
     }
   }
 
-  private formatSpeed = (message: string) => {
-    const { speed, tabLocation } = this.settings;
-    const color = tabLocation === 0 ? COLORS.green : COLORS.white;
-    switch (speed) {
+  private convertSpeed = () => {
+    switch (this.settings.speed) {
       case 'slow':
-        return colorize(message, '①', color);
+        return 1
       case 'medium':
-        return colorize(message, '②', color);
+        return 2
       case 'fast':
+        return 3
+      default:
+        return 2
+    }
+  }
+
+  private formatSetting = (message: string, value: number, tab: number) => {
+    const { tabLocation } = this.settings;
+    const color = tabLocation === tab ? COLORS.green : '\x1b[37m';
+    switch (value) {
+      case 1:
+        return colorize(message, '①', color);
+      case 2:
+        return colorize(message, '②', color);
+      case 3:
         return colorize(message, '③', color);
     }
     return message;

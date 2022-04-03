@@ -16,37 +16,38 @@ var Printer = /** @class */ (function () {
         var _this = this;
         this.startPrint = function () {
             _this.resetBoard();
-            process.stdout.write(' ');
-            _this.repeat('█', _this.board.dimensions.width + 1);
-            process.stdout.write(' \n');
+            _this.endPrint();
         };
         this.endPrint = function () {
             process.stdout.write(' ');
-            _this.repeat('█', _this.board.dimensions.width + 1);
-            process.stdout.write(' ');
+            _this.repeat('█', _this.board.dimensions.width);
+            process.stdout.write('██\n');
         };
         this.printBoard = function () {
             _this.startPrint();
             var _a = _this.board, cells = _a.cells, movingPiece = _a.movingPiece;
+            var height = _this.settings.height * 2;
             cells.forEach(function (row, rowIndex) {
-                process.stdout.write(' █');
-                row.forEach(function (cell, columnIndex) {
-                    if (movingPiece && Printer.isMovingCell(movingPiece, columnIndex, rowIndex)) {
-                        _this.printMoving(movingPiece);
-                        return;
-                    }
-                    switch (cell) {
-                        case 'empty':
-                            _this.repeat(' ');
-                            break;
-                        case 'full':
-                            _this.repeat("".concat(constants_1.COLORS.green, "\u2588").concat(reset));
-                            break;
-                        default:
-                            _this.repeat('▓');
-                    }
+                Array.from({ length: _this.height }).forEach(function () {
+                    process.stdout.write(' █');
+                    row.forEach(function (cell, columnIndex) {
+                        if (movingPiece && Printer.isMovingCell(movingPiece, columnIndex, rowIndex)) {
+                            _this.repeat("".concat(movingPiece.color, "\u2588").concat(reset));
+                            return;
+                        }
+                        switch (cell) {
+                            case 'empty':
+                                _this.repeat(' ');
+                                break;
+                            case 'full':
+                                _this.repeat("".concat(constants_1.COLORS.green, "\u2588").concat(reset));
+                                break;
+                            default:
+                                _this.repeat('▓');
+                        }
+                    });
+                    process.stdout.write('█ \n');
                 });
-                process.stdout.write('█ \n');
             });
             _this.endPrint();
         };
@@ -60,28 +61,26 @@ var Printer = /** @class */ (function () {
         };
         this.printScreen = function (messages) {
             _this.startPrint();
-            var _a = _this.board.dimensions, width = _a.width, height = _a.height;
+            var dimensions = _this.board.dimensions;
+            var height = dimensions.height * _this.height;
             var additionalRows = Math.max(0, height - messages.length - 2);
             var before = Math.floor(additionalRows / 2);
             _this.emptyRows(before);
-            var offset = Math.ceil((width - messages.length) / 2);
-            for (var i = 0; i < width; i++) {
+            var offset = Math.ceil((dimensions.width - messages.length) / 2);
+            for (var i = 0; i < dimensions.width; i++) {
                 var row = _this.board.cells[i];
+                var rowSize = row.length * _this.width;
                 process.stdout.write(' █');
                 if (i >= offset && messages) {
                     var message = messages.shift() || { text: '' };
-                    var messageText = "".concat(message.label ? message.label : '').concat(message.text);
-                    var rowSize = row.length * constants_1.BOARD_DIMENSIONS.printDimensions.width;
-                    var space = (rowSize - messageText.length) / constants_1.BOARD_DIMENSIONS.printDimensions.width;
-                    var leading = Math.floor(space / 2);
-                    _this.repeat(' ', leading);
+                    var messageLength = "".concat(message.label ? message.label : '').concat(message.text).length;
+                    var space = rowSize - messageLength;
+                    var leading = Math.ceil(space / 2);
+                    process.stdout.cursorTo(leading + 2);
                     var text = _this.formatText(message);
                     process.stdout.write(text);
-                    _this.repeat(' ', space - leading);
                 }
-                else {
-                    _this.repeat(' ', row.length);
-                }
+                process.stdout.cursorTo(rowSize + 2);
                 process.stdout.write('█ \n');
             }
             _this.emptyRows(additionalRows - before);
@@ -108,30 +107,49 @@ var Printer = /** @class */ (function () {
         };
         this.repeat = function (text, size) {
             if (size === void 0) { size = 1; }
-            var length = constants_1.BOARD_DIMENSIONS.printDimensions.width * size;
+            var length = _this.width * size;
             Array.from({ length: length }).forEach(function () {
                 process.stdout.write(text);
             });
         };
-        this.printMoving = function (movingPiece) {
-            process.stdout.write("".concat(movingPiece.color, "\u2588\u2588").concat(reset));
-        };
         this.formatText = function (message) {
             switch (message.tab) {
-                case 0:
-                    return "".concat(message.label).concat(constants_1.CODES.dim).concat(_this.formatSpeed(message.text)).concat(constants_1.CODES.reset);
+                case 0: {
+                    var formatted = _this.formatSetting(message.text, _this.convertSpeed(), 0);
+                    return "".concat(message.label).concat(constants_1.CODES.dim).concat(formatted).concat(constants_1.CODES.reset);
+                }
+                case 1: {
+                    var formatted = _this.formatSetting(message.text, _this.settings.width, 1);
+                    return "".concat(message.label).concat(constants_1.CODES.dim).concat(formatted).concat(constants_1.CODES.reset);
+                }
+                case 2: {
+                    var formatted = _this.formatSetting(message.text, _this.settings.height, 2);
+                    return "".concat(message.label).concat(constants_1.CODES.dim).concat(formatted).concat(constants_1.CODES.reset);
+                }
                 default: return message.text;
             }
         };
-        this.formatSpeed = function (message) {
-            var _a = _this.settings, speed = _a.speed, tabLocation = _a.tabLocation;
-            var color = tabLocation === 0 ? constants_1.COLORS.green : constants_1.COLORS.white;
-            switch (speed) {
+        this.convertSpeed = function () {
+            switch (_this.settings.speed) {
                 case 'slow':
-                    return colorize(message, '①', color);
+                    return 1;
                 case 'medium':
-                    return colorize(message, '②', color);
+                    return 2;
                 case 'fast':
+                    return 3;
+                default:
+                    return 2;
+            }
+        };
+        this.formatSetting = function (message, value, tab) {
+            var tabLocation = _this.settings.tabLocation;
+            var color = tabLocation === tab ? constants_1.COLORS.green : '\x1b[37m';
+            switch (value) {
+                case 1:
+                    return colorize(message, '①', color);
+                case 2:
+                    return colorize(message, '②', color);
+                case 3:
                     return colorize(message, '③', color);
             }
             return message;
@@ -139,6 +157,29 @@ var Printer = /** @class */ (function () {
         this.board = board;
         this.settings = settings;
     }
+    Object.defineProperty(Printer.prototype, "height", {
+        get: function () {
+            switch (this.settings.height) {
+                case 1:
+                    return 2;
+                case 2:
+                    return 3;
+                case 3:
+                    return 4;
+                default:
+                    return 2;
+            }
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Printer.prototype, "width", {
+        get: function () {
+            return this.settings.width * 2;
+        },
+        enumerable: false,
+        configurable: true
+    });
     Printer.isMovingCell = function (movingPiece, x, y) {
         var piece = movingPiece.piece, _a = movingPiece.location, movingX = _a.x, movingY = _a.y;
         return piece.coordinates.some(function (coord) { return coord.x + movingX === x && coord.y + movingY === y; });

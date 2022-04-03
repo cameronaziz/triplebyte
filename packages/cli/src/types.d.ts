@@ -14,7 +14,7 @@ export type Piece = {
   coordinates: Coordinate[];
 }
 
-export type Color = 'red' | 'blue' | 'green' | 'yellow' | 'magenta' | 'cyan' | 'white'
+export type Color = 'red' | 'blue' | 'green' | 'yellow' | 'magenta' | 'cyan';
 export type Colors = {
   [color in Color]: string;
 }

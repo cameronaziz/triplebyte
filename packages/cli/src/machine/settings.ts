@@ -4,6 +4,8 @@ class Settings {
   private speedTarget: Speed = Speed.Medium;
   private tabLocationTarget = -1;
   private devModeTarget = DEV_MODE;
+  private widthTarget = 2;
+  private heightTarget = 1;
   private listeners: Types.SettingsListener[] = [];
 
   public addEventListener(listener: Types.SettingsListener) {
@@ -19,8 +21,8 @@ class Settings {
   }
 
   public set devMode(status: boolean) {
-    this.notify();
     this.devModeTarget = status;
+    this.notify();
   }
 
   public get speed(): Speed {
@@ -28,8 +30,26 @@ class Settings {
   }
 
   public set speed(status: Speed) {
-    this.notify();
     this.speedTarget = status;
+    this.notify();
+  }
+
+  public get width(): number {
+    return this.widthTarget;
+  }
+
+  public set width(value: number) {
+    this.widthTarget = value;
+    this.notify();
+  }
+
+  public get height(): number {
+    return this.heightTarget;
+  }
+
+  public set height(value: number) {
+    this.heightTarget = value;
+    this.notify();
   }
 
   private notify() {
@@ -49,8 +69,8 @@ class Settings {
       this.tabLocationTarget = -1;
       return;
     }
-    if (location >= 0) {
-      this.tabLocationTarget = 0;
+    if (location >= 2) {
+      this.tabLocationTarget = 2;
       return;
     }
     this.tabLocationTarget = location;

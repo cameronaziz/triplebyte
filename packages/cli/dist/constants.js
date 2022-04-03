@@ -7,13 +7,12 @@ exports.BOARD_DIMENSIONS = {
     width: 10,
     height: 15,
     printDimensions: {
-        width: 2,
+        width: 4,
         height: 2,
     }
 };
 var Speed;
 (function (Speed) {
-    // Off = 'off',
     Speed["Slow"] = "slow";
     Speed["Medium"] = "medium";
     Speed["Fast"] = "fast";
@@ -42,7 +41,6 @@ exports.COLORS = {
     magenta: '\x1b[35m',
     red: '\x1b[31m',
     yellow: '\x1b[33m',
-    white: "\x1b[37m",
 };
 exports.CODES = {
     reset: '\x1b[0m',
@@ -67,12 +65,22 @@ exports.WELCOME_MESSAGE = [
         tab: 0,
     },
     {
+        label: 'Width ',
+        text: '①  ②  ③',
+        tab: 1,
+    },
+    {
+        label: 'Height ',
+        text: '①  ②  ③',
+        tab: 2,
+    },
+    {
         text: '',
     },
     {
-        text: 'Press Enter',
+        text: 'Start: <Enter>',
     },
     {
-        text: 'to start',
+        text: 'Configure: <Tab>',
     },
 ];

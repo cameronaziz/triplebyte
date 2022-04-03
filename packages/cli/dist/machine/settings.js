@@ -6,6 +6,8 @@ var Settings = /** @class */ (function () {
         this.speedTarget = constants_1.Speed.Medium;
         this.tabLocationTarget = -1;
         this.devModeTarget = constants_1.DEV_MODE;
+        this.widthTarget = 2;
+        this.heightTarget = 1;
         this.listeners = [];
     }
     Settings.prototype.addEventListener = function (listener) {
@@ -19,8 +21,8 @@ var Settings = /** @class */ (function () {
             return this.devModeTarget;
         },
         set: function (status) {
-            this.notify();
             this.devModeTarget = status;
+            this.notify();
         },
         enumerable: false,
         configurable: true
@@ -30,8 +32,30 @@ var Settings = /** @class */ (function () {
             return this.speedTarget;
         },
         set: function (status) {
-            this.notify();
             this.speedTarget = status;
+            this.notify();
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Settings.prototype, "width", {
+        get: function () {
+            return this.widthTarget;
+        },
+        set: function (value) {
+            this.widthTarget = value;
+            this.notify();
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Settings.prototype, "height", {
+        get: function () {
+            return this.heightTarget;
+        },
+        set: function (value) {
+            this.heightTarget = value;
+            this.notify();
         },
         enumerable: false,
         configurable: true
@@ -53,8 +77,8 @@ var Settings = /** @class */ (function () {
                 this.tabLocationTarget = -1;
                 return;
             }
-            if (location >= 0) {
-                this.tabLocationTarget = 0;
+            if (location >= 2) {
+                this.tabLocationTarget = 2;
                 return;
             }
             this.tabLocationTarget = location;

@@ -4,13 +4,12 @@ export const BOARD_DIMENSIONS = {
   width: 10,
   height: 15,
   printDimensions: {
-    width: 2,
+    width: 4,
     height: 2,
   }
 };
 
 export enum Speed {
-  // Off = 'off',
   Slow = 'slow',
   Medium = 'medium',
   Fast = 'fast',
@@ -41,7 +40,6 @@ export const COLORS: Types.Colors = {
   magenta: '\x1b[35m',
   red: '\x1b[31m',
   yellow: '\x1b[33m',
-  white: "\x1b[37m",
 };
 
 export const CODES = {
@@ -72,14 +70,23 @@ export const WELCOME_MESSAGE: Types.Message[] = [
     tab: 0,
   },
   {
+    label: 'Width ',
+    text: '①  ②  ③',
+    tab: 1,
+  },
+  {
+    label: 'Height ',
+    text: '①  ②  ③',
+    tab: 2,
+  },
+  {
     text: '',
   },
   {
-    text: 'Press Enter',
-
+    text: 'Start: <Enter>',
   },
   {
-    text: 'to start',
+    text: 'Configure: <Tab>',
 
   },
 ]

@@ -19,6 +19,7 @@ var cli = function () { return new Promise(function (resolve) {
     process.stdin.on('keypress', function (str, key) {
         // Handle exit
         if (key.ctrl && key.name === 'c') {
+            process.stdout.write('\x1B[?25h\n');
             process.exit();
         }
         // Handle end of game
@@ -30,24 +31,64 @@ var cli = function () { return new Promise(function (resolve) {
             // 1, 2 and 3 are for setting the speed
             case '1':
                 if (!machine.isPlaying) {
-                    machine.settings.speed = constants_1.Speed.Slow;
+                    switch (machine.settings.tabLocation) {
+                        case 0:
+                            machine.settings.speed = constants_1.Speed.Slow;
+                            break;
+                        case 1:
+                            machine.settings.width = 1;
+                            break;
+                        case 2:
+                            machine.settings.height = 1;
+                            break;
+                    }
                 }
                 break;
             case '2':
                 if (!machine.isPlaying) {
-                    machine.settings.speed = constants_1.Speed.Medium;
+                    switch (machine.settings.tabLocation) {
+                        case 0:
+                            machine.settings.speed = constants_1.Speed.Medium;
+                            break;
+                        case 1:
+                            machine.settings.width = 2;
+                            break;
+                        case 2:
+                            machine.settings.height = 2;
+                            break;
+                    }
                 }
                 break;
             case '3':
                 if (!machine.isPlaying) {
-                    machine.settings.speed = constants_1.Speed.Fast;
+                    switch (machine.settings.tabLocation) {
+                        case 0:
+                            machine.settings.speed = constants_1.Speed.Fast;
+                            break;
+                        case 1:
+                            machine.settings.width = 3;
+                            break;
+                        case 2:
+                            machine.settings.height = 3;
+                            break;
+                    }
                 }
                 break;
             // When playing, move piece
             // When on home, set speed
             case 'left':
                 if (!machine.isPlaying) {
-                    machine.settings.speed = constants_1.SPEEDS[machine.settings.speed].lower;
+                    switch (machine.settings.tabLocation) {
+                        case 0:
+                            machine.settings.speed = constants_1.SPEEDS[machine.settings.speed].lower;
+                            break;
+                        case 1:
+                            machine.settings.width = Math.max(1, machine.settings.width - 1);
+                            break;
+                        case 2:
+                            machine.settings.height = Math.max(1, machine.settings.height - 1);
+                            break;
+                    }
                     break;
                 }
                 if (machine.board.movingPiece && machine.board.movingPiece.leftEdge() > 0) {
@@ -58,8 +99,17 @@ var cli = function () { return new Promise(function (resolve) {
             // When on home, set speed
             case 'right':
                 if (!machine.isPlaying) {
-                    machine.settings.speed = constants_1.SPEEDS[machine.settings.speed].higher;
-                    break;
+                    switch (machine.settings.tabLocation) {
+                        case 0:
+                            machine.settings.speed = constants_1.SPEEDS[machine.settings.speed].higher;
+                            break;
+                        case 1:
+                            machine.settings.width = Math.min(3, machine.settings.width + 1);
+                            break;
+                        case 2:
+                            machine.settings.height = Math.min(3, machine.settings.height + 1);
+                            break;
+                    }
                 }
                 if (machine.board.movingPiece && machine.board.movingPiece.rightEdge() < constants_1.BOARD_DIMENSIONS.width) {
                     machine.board.movingPiece.location.x += 1;
@@ -95,6 +145,10 @@ var cli = function () { return new Promise(function (resolve) {
             }
             case 'tab': {
                 if (!machine.isPlaying) {
+                    if (key.shift === true) {
+                        machine.settings.tabLocation -= 1;
+                        break;
+                    }
                     machine.settings.tabLocation += 1;
                 }
                 break;
