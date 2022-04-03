@@ -75,19 +75,22 @@ const launch = async () => {
   const pj = await packageJson(uris, );
   await parse(pj, terminal)
   terminal.show();
-  commands.executeCommand('workbench.action.toggleMaximizedPanel');
   terminal.sendText("tb")
 };
 
 const start = async () => {
-  await window.showInformationMessage('Starting Game', { modal: true });
-  launch();
+  window.showInformationMessage('Starting Tetris in integrated terminal.');
+  const { activeTerminal } = window;
+  if (activeTerminal) {
+    activeTerminal.hide();
+  }
+  await launch();
 }
 
-export const activate = (context: ExtensionContext) => {
+export const activate = async (context: ExtensionContext) => {
   const hasStarted = context.workspaceState.get<boolean>('hasStarted');
   if (hasStarted) {
-    start();
+    await start();
   }
 
   commands.registerCommand('triplebyte.kill', () => {
