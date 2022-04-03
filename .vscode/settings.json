@@ -17,6 +17,7 @@
     "packages/frontend/public": true,
     // "packages/cli": true,
     "**/dist": true,
+    ".gitpod.yml": true,
     "packages/extension/out": true,
     // "packages/frontend": true,
     // "packages/extension": true,
