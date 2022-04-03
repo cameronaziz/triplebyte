@@ -25,6 +25,16 @@
 				"command": "triplebyte.launch",
 				"title": "Start Tetris",
 				"category": "Triplebyte"
+			},
+			{
+				"command": "triplebyte.auto",
+				"title": "Auto Start Tetris",
+				"category": "Triplebyte"
+			},
+			{
+				"command": "triplebyte.kill",
+				"title": "Stop Tetris LIstener",
+				"category": "Triplebyte"
 			}
 		]
 	},
