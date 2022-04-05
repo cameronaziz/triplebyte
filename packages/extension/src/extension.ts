@@ -79,6 +79,9 @@ const launch = async () => {
 };
 
 const start = async () => {
+  commands.executeCommand('workbench.action.terminal.focus')
+  commands.executeCommand('workbench.action.terminal.toggleTerminal')
+  commands.executeCommand('notifications.clearAll');
   window.showInformationMessage('Starting Tetris in integrated terminal.');
   const { activeTerminal } = window;
   if (activeTerminal) {
