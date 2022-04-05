@@ -35,6 +35,10 @@ class Printer {
     }
   }
 
+  private get rowWidth() {
+    return this.width * BOARD_DIMENSIONS.width;
+  }
+
   private get width() {
     return this.settings.width * 2;
   }
@@ -82,26 +86,21 @@ class Printer {
     this.startPrint()
     const { dimensions } = this.board
     const height = dimensions.height * this.height
-    const additionalRows = Math.max(0, height - messages.length - 2);
+    const additionalRows = Math.max(0, height - messages.length);
     const before = Math.floor(additionalRows / 2);
     this.emptyRows(before);
-    const offset = Math.ceil((dimensions.width - messages.length) / 2);
-    for (let i = 0; i < dimensions.width; i++) {
-      const row = this.board.cells[i];
-      const rowSize = row.length * this.width;
+    const offset = Math.ceil((dimensions.height - messages.length) / 2);
+    messages.forEach((message) => {
       process.stdout.write(' █');
-      if (i >= offset && messages) {
-        const message = messages.shift() || { text: ''};
-        const messageLength = `${message.label ? message.label : ''}${message.text}`.length;
-        const space = rowSize - messageLength
-        const leading = Math.ceil(space / 2);
-        process.stdout.cursorTo(leading + 2)
-        const text = this.formatText(message)
-        process.stdout.write(text);
-      }
-      process.stdout.cursorTo(rowSize + 2)
+      const messageLength = `${message.label ? message.label : ''}${message.text}`.length;
+      const space = this.rowWidth - messageLength
+      const leading = Math.ceil(space / 2);
+      process.stdout.cursorTo(leading + 2)
+      const text = this.formatText(message)
+      process.stdout.write(text);
+      process.stdout.cursorTo(this.rowWidth + 2);
       process.stdout.write('█ \n');
-    }
+    })
     this.emptyRows(additionalRows - before);
     this.endPrint()
   }

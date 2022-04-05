@@ -65,6 +65,9 @@ export const WELCOME_MESSAGE: Types.Message[] = [
 
   },
   {
+    text: '<Tab> to Configure',
+  },
+  {
     label: 'Speed ',
     text: '①  ②  ③',
     tab: 0,
@@ -83,10 +86,24 @@ export const WELCOME_MESSAGE: Types.Message[] = [
     text: '',
   },
   {
-    text: '<Enter> to Start',
+    text: 'Controls',
   },
   {
-    text: '<Tab> to Configure',
-
+    text: '⬅ to move left',
+  },
+  {
+    text: '⮕ to move right',
+  },
+  {
+    text: '⬇ to rotate clockwise',
+  },
+  {
+    text: '⬆ to rotate counter',
+  },
+  {
+    text: '<SPACE> to move down',
+  },
+  {
+    text: '<Enter> to Start',
   },
 ]

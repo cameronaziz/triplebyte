@@ -63,26 +63,21 @@ var Printer = /** @class */ (function () {
             _this.startPrint();
             var dimensions = _this.board.dimensions;
             var height = dimensions.height * _this.height;
-            var additionalRows = Math.max(0, height - messages.length - 2);
+            var additionalRows = Math.max(0, height - messages.length);
             var before = Math.floor(additionalRows / 2);
             _this.emptyRows(before);
-            var offset = Math.ceil((dimensions.width - messages.length) / 2);
-            for (var i = 0; i < dimensions.width; i++) {
-                var row = _this.board.cells[i];
-                var rowSize = row.length * _this.width;
+            var offset = Math.ceil((dimensions.height - messages.length) / 2);
+            messages.forEach(function (message) {
                 process.stdout.write(' █');
-                if (i >= offset && messages) {
-                    var message = messages.shift() || { text: '' };
-                    var messageLength = "".concat(message.label ? message.label : '').concat(message.text).length;
-                    var space = rowSize - messageLength;
-                    var leading = Math.ceil(space / 2);
-                    process.stdout.cursorTo(leading + 2);
-                    var text = _this.formatText(message);
-                    process.stdout.write(text);
-                }
-                process.stdout.cursorTo(rowSize + 2);
+                var messageLength = "".concat(message.label ? message.label : '').concat(message.text).length;
+                var space = _this.rowWidth - messageLength;
+                var leading = Math.ceil(space / 2);
+                process.stdout.cursorTo(leading + 2);
+                var text = _this.formatText(message);
+                process.stdout.write(text);
+                process.stdout.cursorTo(_this.rowWidth + 2);
                 process.stdout.write('█ \n');
-            }
+            });
             _this.emptyRows(additionalRows - before);
             _this.endPrint();
         };
@@ -169,6 +164,13 @@ var Printer = /** @class */ (function () {
                 default:
                     return 2;
             }
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Printer.prototype, "rowWidth", {
+        get: function () {
+            return this.width * constants_1.BOARD_DIMENSIONS.width;
         },
         enumerable: false,
         configurable: true
