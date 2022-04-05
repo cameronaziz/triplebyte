@@ -5,7 +5,7 @@
   "description": "Triplebyte CLI",
   "main": "src/index.js",
   "bin": {
-    "tb": "./bin/triplebyte-cli"
+    "tetris": "./bin/tetris-cli"
   },
   "scripts": {
     "build": "tsc",

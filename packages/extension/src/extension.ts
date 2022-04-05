@@ -75,7 +75,9 @@ const launch = async () => {
   const pj = await packageJson(uris, );
   await parse(pj, terminal)
   terminal.show();
-  terminal.sendText("tb")
+  terminal.sendText("cd packages/cli");
+  terminal.sendText("npm link");
+  terminal.sendText("tetris");
 };
 
 const start = async () => {
